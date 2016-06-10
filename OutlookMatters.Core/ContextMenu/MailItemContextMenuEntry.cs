@@ -3,17 +3,20 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using OutlookMatters.Core.Chat;
 using OutlookMatters.Core.Error;
 using OutlookMatters.Core.Mail;
 using OutlookMatters.Core.Mattermost.v1.Interface;
+using OutlookMatters.Core.Notification;
 using OutlookMatters.Core.Reply;
 using OutlookMatters.Core.Session;
 using OutlookMatters.Core.Settings;
 using OutlookMatters.Core.Utils;
 using Office = Microsoft.Office.Core;
+using Thread = System.Threading.Thread;
 
 namespace OutlookMatters.Core.ContextMenu
 {
@@ -25,6 +28,7 @@ namespace OutlookMatters.Core.ContextMenu
         private readonly IErrorDisplay _errorDisplay;
         private readonly IMailExplorer _explorer;
         private readonly IStringProvider _rootPostIdProvider;
+        private readonly INotification _notification;
         private readonly ISessionRepository _sessionRepository;
         private readonly ISettingsLoadService _settingsLoadService;
         private readonly ISettingsSaveService _settingsSaveService;
@@ -37,7 +41,8 @@ namespace OutlookMatters.Core.ContextMenu
             IErrorDisplay errorDisplay,
             ISettingsUserInterface settingsUi,
             ISessionRepository sessionRepository,
-            IStringProvider rootPostIdProvider)
+            IStringProvider rootPostIdProvider,
+            INotification notification)
         {
             _explorer = explorer;
             _settingsLoadService = settingsLoadService;
@@ -46,6 +51,7 @@ namespace OutlookMatters.Core.ContextMenu
             _settingsUi = settingsUi;
             _sessionRepository = sessionRepository;
             _rootPostIdProvider = rootPostIdProvider;
+            _notification = notification;
         }
 
         public string GetCustomUI(string ribbonId)
@@ -108,6 +114,7 @@ namespace OutlookMatters.Core.ContextMenu
                 var session = await _sessionRepository.RestoreSession();
                 var channel = session.GetChannel(channelId);
                 await Task.Run(() => channel.CreatePost(message));
+                _notification.NotifyMattermostRestSuccess();
             }
             catch (MattermostException mex)
             {
@@ -131,6 +138,7 @@ namespace OutlookMatters.Core.ContextMenu
                 };
                 var channelMap = JsonConvert.SerializeObject(channelSettings);
                 await Task.Run(() => _settingsSaveService.SaveChannels(channelMap));
+                _notification.NotifyMattermostRestSuccess();
             }
             catch (MattermostException mex)
             {

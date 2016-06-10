@@ -9,6 +9,7 @@ using OutlookMatters.Core.Error;
 using OutlookMatters.Core.Http;
 using OutlookMatters.Core.Mail;
 using OutlookMatters.Core.Mattermost;
+using OutlookMatters.Core.Notification;
 using OutlookMatters.Core.Reply;
 using OutlookMatters.Core.Security;
 using OutlookMatters.Core.Session;
@@ -64,6 +65,7 @@ namespace OutlookMatters
             var settingsUi = new WpfSettingsUserInterface(settingsService, settingsService);
             var permalinkUi = new PermalinkDialogShell();
             var postIdFilter = new PostIdFromPermalinkFilter(permalinkUi);
+            var notification = new NotficationService();
 
             return new MailItemContextMenuEntry(
                 mailExplorer,
@@ -72,7 +74,8 @@ namespace OutlookMatters
                 errorDisplay,
                 settingsUi,
                 sessionRepository,
-                postIdFilter);
+                postIdFilter,
+                notification);
         }
 
         #region VSTO generated code

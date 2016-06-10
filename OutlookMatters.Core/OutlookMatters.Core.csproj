@@ -39,6 +39,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
@@ -134,6 +135,10 @@
     <Compile Include="Mattermost\v3\RestServiceImpl.cs" />
     <Compile Include="Mattermost\v3\Interface\Team.cs" />
     <Compile Include="Mattermost\v3\SessionImpl.cs" />
+    <Compile Include="Notification\INotification.cs" />
+    <Compile Include="Notification\NotificationWindow.xaml.cs">
+      <DependentUpon>NotificationWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Session\IClientFactory.cs" />
     <Compile Include="Session\ISessionRepository.cs" />
     <Compile Include="Mail\IExplorerService.cs" />
@@ -178,6 +183,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Notification\NotificationWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Reply\PermalinkDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
